@@ -1,0 +1,7 @@
+target/
+.mvn/
+effective-pom
+direct-dependencies.txt
+javac_args.txt
+java_args.txt
+*.log

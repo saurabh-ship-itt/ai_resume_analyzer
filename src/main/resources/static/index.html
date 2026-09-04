@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TalentPulse — Smart AI Resume Analyzer & Job Matching</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-sparkles"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">TalentPulse</span>
+          <span class="brand-tag">Enterprise AI Resume Intelligence</span>
+        </div>
+      </div>
+
+      <div class="nav-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="candidateCountStat">0</span>
+          <span class="stat-label">Candidates</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-value" id="jobCountStat">0</span>
+          <span class="stat-label">Active Jobs</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+      
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar">
+        <nav class="nav-menu">
+          <button class="nav-tab active" data-tab="tab-upload">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>Resume Parser</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-jobs">
+            <i class="fa-solid fa-briefcase"></i>
+            <span>Job Openings</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-match">
+            <i class="fa-solid fa-bullseye"></i>
+            <span>Smart Matcher</span>
+          </button>
+          <button class="nav-tab" data-tab="tab-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Talent Search</span>
+          </button>
+        </nav>
+
+        <div class="system-status">
+          <div class="status-indicator online"></div>
+          <div class="status-info">
+            <span class="status-title">NLP Engine Ready</span>
+            <span class="status-sub">Tika 2.8 & Custom Heuristics</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="content-area">
+
+        <!-- TAB 1: RESUME PARSER -->
+        <section id="tab-upload" class="tab-content active">
+          <div class="section-header">
+            <div>
+              <h2>Resume Intelligence Parser</h2>
+              <p class="subtitle">Upload resumes in PDF, DOCX, or TXT format to automatically extract skills, contact details, and experience history.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Upload Box -->
+            <div class="card card-upload">
+              <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-icon">
+                  <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <h3>Drag & Drop Resume File</h3>
+                <p>Supports <strong>PDF, DOCX, TXT</strong> (Max 5MB)</p>
+                <div class="file-select-btn">
+                  <span>Browse Files</span>
+                  <input type="file" id="resumeFile" accept=".pdf,.docx,.doc,.txt" />
+                </div>
+                <div class="selected-file-info" id="selectedFileInfo"></div>
+              </div>
+
+              <button id="uploadBtn" class="btn btn-primary btn-block" disabled>
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze & Extract Profile
+              </button>
+            </div>
+
+            <!-- Parsed Profile Result Card -->
+            <div class="card card-result">
+              <div class="card-header">
+                <h3>Extracted Candidate Profile</h3>
+                <span class="badge badge-neutral" id="parsingStatusBadge">Awaiting Upload</span>
+              </div>
+              
+              <div id="uploadResultContainer" class="result-placeholder">
+                <i class="fa-solid fa-id-card"></i>
+                <p>Upload a resume to see structured candidate details here.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- TAB 2: JOB OPENINGS -->
+        <section id="tab-jobs" class="tab-content">
+          <div class="section-header">
+            <div>
+              <h2>Job Requisitions</h2>
+              <p class="subtitle">Manage active job postings and define required candidate skill criteria for AI matching.</p>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Create Job Form -->
+            <div class="card">
+              <div class="card-header">
+                <h3>Create New Position</h3>
+              </div>
+              <form id="jobForm" class="styled-form">
+                <div class="form-group">
+                  <label for="jobTitle">Job Title</label>
+                  <input type="text" id="jobTitle" placeholder="e.g. Senior Java Backend Engineer" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="jobDesc">Description</label>
+                  <textarea id="jobDesc" rows="4" placeholder="Describe key responsibilities and role requirements..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="jobSkills">Required Skills <span class="help-text">(Comma separated)</span></label>
+                  <input type="text" id="jobSkills" placeholder="Java, Spring Boot, MySQL, REST API, Microservices" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="jobMinExp">Minimum Experience (Years)</label>
+                  <input type="number" id="jobMinExp" placeholder="0" min="0" value="2" />
+                </div>
+
+                <button type="submit" class="btn btn-accent btn-block">
+                  <i class="fa-solid fa-plus"></i> Post Job Position
+                </button>
+              </form>
+            </div>
+
+            <!-- Available Jobs List -->
+            <div class="card">
+              <div class="card-header">
+                <h3>Active Job Postings</h3>
+                <span class="badge badge-primary" id="jobsCountBadge">0 Jobs</span>
+              </div>
+              <div class="jobs-list" id="jobsList">
+                <div class="empty-state">No job postings created yet.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- TAB 3: SMART MATCHER -->
+        <section id="tab-match" class="tab-content">
+          <div class="section-header">
+            <div>
+              <h2>AI Candidate-Job Matcher</h2>
+              <p class="subtitle">Evaluate candidate alignment against specific job requisitions using skill gap & experience scoring.</p>
+            </div>
+          </div>
+
+          <div class="card card-matcher-controls">
+            <div class="matcher-inputs">
+              <div class="form-group">
+                <label><i class="fa-solid fa-user-tie"></i> Select Candidate</label>
+                <select id="candidateSelect" class="custom-select">
+                  <option value="">Loading Candidates...</option>
+                </select>
+              </div>
+
+              <div class="matcher-vs">
+                <i class="fa-solid fa-bolt"></i>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fa-solid fa-briefcase"></i> Select Job Requisition</label>
+                <select id="jobSelect" class="custom-select">
+                  <option value="">Loading Jobs...</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="matcher-actions">
+              <button id="matchBtn" class="btn btn-primary">
+                <i class="fa-solid fa-calculator"></i> Run Match Analysis
+              </button>
+              <button id="recommendBtn" class="btn btn-outline">
+                <i class="fa-solid fa-trophy"></i> Top 5 Recommended Jobs for Candidate
+              </button>
+            </div>
+          </div>
+
+          <!-- Match Output Display -->
+          <div class="grid-2col match-output-grid">
+            <!-- Single Match Breakdown -->
+            <div class="card" id="singleMatchCard">
+              <div class="card-header">
+                <h3>Match Report</h3>
+              </div>
+              <div id="matchResult" class="result-placeholder">
+                <i class="fa-solid fa-chart-pie"></i>
+                <p>Select candidate & job, then click "Run Match Analysis".</p>
+              </div>
+            </div>
+
+            <!-- Top 5 Recommendations -->
+            <div class="card">
+              <div class="card-header">
+                <h3>Top Recommendations</h3>
+              </div>
+              <div id="recsListContainer">
+                <ul id="recsList" class="recs-list">
+                  <div class="empty-state">Click "Top 5 Recommended Jobs" to see ranked matches.</div>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- TAB 4: TALENT SEARCH -->
+        <section id="tab-search" class="tab-content">
+          <div class="section-header">
+            <div>
+              <h2>Semantic Job Search</h2>
+              <p class="subtitle">Search job descriptions and skill queries to find matching positions.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="search-bar-container">
+              <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchQuery" placeholder="Search by skills, tech stack, or job title (e.g. Java, Python, Spring)..." />
+              </div>
+              <button id="searchBtn" class="btn btn-primary">Search</button>
+            </div>
+
+            <div class="search-results-wrapper">
+              <div id="searchResults" class="search-cards-grid">
+                <div class="empty-state">Enter a query above to search active positions.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
